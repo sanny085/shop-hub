@@ -1,16 +1,58 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { toast } from 'react-toastify'; 
+import StripeCheckout from 'react-stripe-checkout';
+
 import {removeToCart, increaseItem, decreaseItem, clearItemsFromCart,getTotalPrice} from "./cartSlice"
+
+
 
 function Cart(props) {
 
 const dispatch = useDispatch();
 const {cartItems, cartTotalAmount,cartTotalQuantity }=useSelector(state=>state.cart)
-const state1 = useSelector(state=>state)
-
  
-console.log('Cart cart Item', state1);
+//const [checkOutPrice, setCheckOutPrice] = useState(parseInt(cartTotalAmount.substring(1)))
+
+console.log('Checkout Price', cartTotalAmount && parseInt(cartTotalAmount.substring(1)))
+
+const [product, setProduct] = useState({
+  name: 'Sanny',
+  price : cartTotalAmount ? parseInt(cartTotalAmount.substring(1)) : null,
+  productBy : 'Nike Brand'
+})
+
+const makePayment = token => {
+  const body = {
+    token,
+    product
+  }
+  const headers = {
+    "Content-Type": "application/json"
+  }
+
+  return fetch('http://localhost:8000/Payment', {
+    method : 'POST',
+    headers,
+    body : JSON.stringify(body)
+  })
+  .then(response => {
+    console.log('RESPONSE : ', response);
+    const {status} = response;
+    console.log('STATUS : ', status)
+      if(status === 200) {
+        toast.success(`Your Order has been placed successfully! Billing Amount is ${cartTotalAmount}`, {
+          position: "top-right",
+          autoClose: 2000, 
+          });
+        dispatch(clearItemsFromCart())
+       
+      }
+  })
+  .catch(error => console.log(error))
+}
+ 
 
 useEffect(()=>{
   dispatch(getTotalPrice());
@@ -75,7 +117,19 @@ return (
        
         <div className="cart-shipping"><h4>Shipping :</h4><span>Free Shipping</span></div>
         <div className="cart-checkout-button">
+          <StripeCheckout 
+            token={makePayment} 
+            stripeKey ="pk_test_51J4QieSFWEOClMCa1xTCOYkyvZYH0wya2k80ouYFpVCiVWxgDXoew2XZg4pLljP9xYtPStwrLN52gz3eNaMZLGO400mM8GdI5k"
+            //stripeKey={process.env.REACT_APP_KEY} 
+            name={`Pay Here ${cartTotalAmount}`}
+            amount={cartTotalAmount ? parseInt(cartTotalAmount.substring(1)) * 100 : null} 
+            shippingAddress
+            billingAddress
+            >
+
           <button>Proceed to Checkout</button>
+          </StripeCheckout>
+
         </div>
       </div>
       </>

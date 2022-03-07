@@ -22,6 +22,8 @@ export const authSlice = createSlice({
         state.user = null;
     } 
   },
+
+  
 });
 
 // Action creators are generated for each case reducer function

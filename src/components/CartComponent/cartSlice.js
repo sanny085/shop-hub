@@ -69,7 +69,7 @@ export const cartSlice = createSlice({
         state.cartItems = [];
         toast.error(`Your Cart is empty`, {
             position: "top-right",
-            autoClose: 2000, 
+            autoClose: 1000, 
             });
     }, 
 
