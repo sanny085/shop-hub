@@ -119,7 +119,7 @@ return (
         <div className="cart-checkout-button">
           <StripeCheckout 
             token={makePayment} 
-            stripeKey ="pk_test_51J4QieSFWEOClMCa1xTCOYkyvZYH0wya2k80ouYFpVCiVWxgDXoew2XZg4pLljP9xYtPStwrLN52gz3eNaMZLGO400mM8GdI5k"
+            stripeKey ="pk_test_51J4QieSFWEOClMCaOM57WUZYc3XozLu8qlTooeAbZpkLSjgSl5NdUsU3kdakmSJmY83lbeX4C0gabUOKFPmqw5yF00Z1KkG68n"
             //stripeKey={process.env.REACT_APP_KEY} 
             name={`Pay Here ${cartTotalAmount}`}
             amount={cartTotalAmount ? parseInt(cartTotalAmount.substring(1)) * 100 : null} 
